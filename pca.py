@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import io
 from scipy.stats import ttest_ind
+from sklearn.decomposition import PCA
+from matplotlib import pyplot as plt
 
 differentially_expressed_miRNA = []
 
@@ -49,8 +51,33 @@ for i in range(len(miR_data)):
 
 print(differentially_expressed_miRNA)
 
-# Convert the differentially_expressed_miRNA list to a DataFrame
-df = pd.DataFrame(differentially_expressed_miRNA, columns=['miRNA', 'p_value', 'fold_change'])
+# Select the differentially expressed miRNA data
+differentially_expressed_miRNA_data = df.loc[:, ctrl_columns + glio_columns]
 
-# Save the DataFrame to a .csv file
-df.to_csv('differentially_expressed_miRNA.csv', index=False)
+# Perform PCA
+pca = PCA(n_components=2)
+pca.fit(differentially_expressed_miRNA_data)
+
+# Get the transformed data
+transformed_data = pca.transform(differentially_expressed_miRNA_data)
+
+# Get the first and second principal components
+pc1 = transformed_data[:, 0]
+pc2 = transformed_data[:, 1]
+
+# Iterate through each row of the data
+for i in range(len(pc1)):
+    # If the data is from the CTRL group, plot it with a blue dot
+    if i < len(ctrl_columns):
+        plt.scatter(pc1[i], pc2[i], color='blue')
+    # If the data is from the GLIO group, plot it with a red dot
+    else:
+        plt.scatter(pc1[i], pc2[i], color='red')
+
+# Add labels and a title to the plot
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('PCA of Differentially Expressed miRNA Data')
+
+# Show the plot
+plt.show()
