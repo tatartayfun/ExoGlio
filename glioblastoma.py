@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import io
 from scipy.stats import ttest_ind
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 differentially_expressed_miRNA = []
 
@@ -54,3 +56,13 @@ df = pd.DataFrame(differentially_expressed_miRNA, columns=['miRNA', 'p_value', '
 
 # Save the DataFrame to a .csv file
 df.to_csv('differentially_expressed_miRNA.csv', index=False)
+
+# Concatenate the ctrl_data and glio_data DataFrames
+data = pd.concat([ctrl_data, glio_data], axis=1)
+
+# Calculate the Pearson correlation matrix
+corr = data.corr()
+
+# Visualize the Pearson correlation matrix as a hierarchical heatmap
+sns.clustermap(corr, cmap='RdYlGn', linewidths=.5, figsize=(10, 10))
+plt.show()
