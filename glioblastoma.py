@@ -28,6 +28,7 @@ glio_columns = ["GSM3070491", "GSM3070492", "GSM3070493", "GSM3070494", "GSM3070
 
 # Select the data for the ctrl_columns and glio_columns
 miR_data = df['ID_REF']
+print(miR_data[209])
 ctrl_data = df[ctrl_columns]
 glio_data = df[glio_columns]
 
